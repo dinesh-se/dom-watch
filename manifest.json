@@ -1,0 +1,25 @@
+{
+  "name": "dom-watch",
+  "description": "Browser extension that observes dom changes and plays sound when changes occured. Currently works only in Chrome.",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "author": "Dinesh Haribabu <dinesh.be.gct@gmail.com> (https://dineshharibabu.in)",
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/child.mp3", "assets/attr.mp3"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

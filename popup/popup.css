@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 170px;
+}
+
+#selector-input, #start-button, #stop-button {
+  width: 100%;
+}
+/* CSS Grid generated with https://grid.layoutit.com/ */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px 10px;
+  grid-template-areas:
+    "input input input input"
+    "start start stop stop"
+    "message message message message";
+}
+.input { grid-area: input; }
+.start { grid-area: start; }
+.stop { grid-area: stop; }
+.message { grid-area: message; }
