@@ -22,9 +22,9 @@
       
       if (targetNode) {
         observer.observe(targetNode, config);
-        sendResponse({result: 'success'})
+        sendResponse(true);
       } else {
-        sendResponse({result: null})
+        sendResponse(false);
       }
     }
     if(request.action === 'stop-observing') {
