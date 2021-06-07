@@ -4,6 +4,9 @@
   "version": "0.0.1",
   "manifest_version": 3,
   "author": "Dinesh Haribabu <dinesh.be.gct@gmail.com> (https://dineshharibabu.in)",
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup/popup.html"
   },
@@ -13,7 +16,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content-script.js"]
+      "js": ["inject/content-script.js"]
     }
   ],
   "web_accessible_resources": [

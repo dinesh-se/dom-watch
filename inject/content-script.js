@@ -17,7 +17,7 @@
   const observer = new MutationObserver(callback);
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if(request.action === 'start') {
+    if(request.action === 'start-observing') {
       const targetNode = document.querySelector(request.selectorName);
       
       if (targetNode) {
@@ -27,7 +27,7 @@
         sendResponse({result: null})
       }
     }
-    if(request.action === 'stop') {
+    if(request.action === 'stop-observing') {
       observer.disconnect();
     }
   });

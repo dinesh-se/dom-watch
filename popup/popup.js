@@ -1,4 +1,4 @@
-(function() {
+(async function() {
   const input = document.getElementById('selector-input');
   const startButton = document.getElementById('start-button');
   const stopButton = document.getElementById('stop-button');
@@ -11,6 +11,8 @@
     return tab;
   };
 
+  const { id: currentTabId } = await getCurrentTab();
+
   input.addEventListener('input', (event) => {
     if (event.target.value) {
       startButton.disabled = false
@@ -21,13 +23,21 @@
   
   startButton.addEventListener('click', async () => {
     const selectorName = document.getElementById('selector-input').value;
-    const { id: tabId } = await getCurrentTab();
   
     if (selectorName) {
-      chrome.tabs.sendMessage(tabId, { action: 'start', selectorName }, (result) => {
+      chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, ({result}) => {
         if(!result) {
           message.innerText = 'No Element found'
         } else {
+          const tabDetails = {
+            tabId: currentTabId,
+            selectorName,
+            startDisabled: true,
+            stopDisabled: false,
+            message: 'Observing for changes',
+          };
+
+          chrome.runtime.sendMessage({ action: 'update-tab-details', tabDetails });
           message.innerText = 'Observing for changes';
           input.disabled = true;
           startButton.disabled = true;
@@ -38,11 +48,26 @@
   });
   
   stopButton.addEventListener('click', async () => {
-    const { id: tabId } = await getCurrentTab();
-  
-    chrome.tabs.sendMessage(tabId, { action: 'stop' });
+    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' });
+    chrome.runtime.sendMessage({ action: 'delete-tab-details', tabId: currentTabId });
     message.innerText = '';
     stopButton.disabled = true;
     input.disabled = false;
+  });
+
+  chrome.runtime.sendMessage({ action: 'get-tab-details', tabId: currentTabId }, (response) => {
+    console.log('getting tab details', response);
+    const {
+      selectorName,
+      startDisabled,
+      stopDisabled,
+      message: popupMessage,
+    } = response;
+    
+    input.value = selectorName;
+    input.disabled = !!selectorName;
+    startButton.disabled = startDisabled;
+    stopButton.disabled = stopDisabled;
+    message.innerText = popupMessage;
   });
 })();
