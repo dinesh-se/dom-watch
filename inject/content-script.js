@@ -2,8 +2,8 @@
   const config = { attributes: true, childList: true, subtree: true };
 
   const callback = function(mutationsList) {
-    const childBeep = new Audio(chrome.runtime.getURL('assets/child.mp3'));
-    const attrBeep = new Audio(chrome.runtime.getURL('assets/attr.mp3'));
+    const childBeep = new Audio(chrome.runtime.getURL('assets/audio/child.mp3'));
+    const attrBeep = new Audio(chrome.runtime.getURL('assets/audio/attr.mp3'));
 
       for(const mutation of mutationsList) {
         if (mutation.type === 'childList') {

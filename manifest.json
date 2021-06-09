@@ -8,7 +8,19 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "/assets/images/dom-watch-16.png",
+      "32": "/assets/images/dom-watch-32.png",
+      "48": "/assets/images/dom-watch-48.png",
+      "128": "/assets/images/dom-watch-128.png"
+    }
+  },
+  "icons": {
+    "16": "/assets/images/dom-watch-16.png",
+    "32": "/assets/images/dom-watch-32.png",
+    "48": "/assets/images/dom-watch-48.png",
+    "128": "/assets/images/dom-watch-128.png"
   },
   "permissions": [
     "activeTab",
@@ -22,7 +34,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["assets/child.mp3", "assets/attr.mp3"],
+      "resources": ["assets/audio/child.mp3", "assets/audio/attr.mp3"],
       "matches": ["<all_urls>"]
     }
   ]
