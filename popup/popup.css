@@ -3,24 +3,78 @@
 }
 
 body {
-  width: 170px;
+  font-size: 16px;
 }
 
 #selector-input, #start-button, #stop-button {
   width: 100%;
 }
+
 /* CSS Grid generated with https://grid.layoutit.com/ */
 .grid-container {
+  width: 320px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 10px 10px;
+  grid-template-rows: 3rem 4.5rem 1.5rem;
+  gap: 0.5rem 0.5rem;
   grid-template-areas:
+    "header header header header"
     "input input input input"
-    "start start stop stop"
-    "message message message message";
+    "start start stop stop";
 }
-.input { grid-area: input; }
-.start { grid-area: start; }
-.stop { grid-area: stop; }
-.message { grid-area: message; }
+
+.header { 
+  grid-area: header;
+  background-image: url('../assets/images/popup.png');
+  background-size: cover;
+}
+
+.input { 
+  grid-area: input;
+}
+
+.selector-name {
+  height: 2rem;
+}
+
+.code-line {
+  background: rgb(240 240 240);
+  padding: 2px;
+  letter-spacing: 1px;
+}
+
+.input-message {
+  margin: 0;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1rem;
+}
+
+.start { 
+  grid-area: start;
+  background-color: #1C7BCC;
+  border: none;
+  border-radius: 2px;
+  color: #ffffff;
+}
+
+.start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stop { 
+  grid-area: stop;
+  border: none;
+  border-radius: 2px;
+}
+
+.stop:disabled {
+  cursor: not-allowed;
+}
+
+.message {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+}

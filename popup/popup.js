@@ -4,6 +4,7 @@
   const stopButton = document.getElementById('stop-button');
   const message = document.getElementById('message');
   const tabsDetailsMap = {};
+  input.focus();
   
   const getCurrentTab = async () => {
     const queryOptions = { active: true, currentWindow: true };
@@ -61,7 +62,7 @@
           renderUI({ selectorName });
           chrome.storage.local.set({ tabsDetailsMap: updatedTabsDetailsMap});
         } else {
-          message.innerText = 'No Element found';
+          message.innerText = 'No element found';
         }
       });
     }

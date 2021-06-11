@@ -1,8 +1,8 @@
 (function () {
   chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-    const { url } = changeInfo;
+    const { status } = changeInfo;
   
-    if (url) {
+    if (status === 'loading') {
       chrome.tabs.sendMessage(tabId, { action: 'stop-observing' });
       chrome.storage.local.get(['tabsDetailsMap'], (result) => {
         const { tabsDetailsMap } = result;
