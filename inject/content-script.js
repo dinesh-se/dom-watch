@@ -1,19 +1,14 @@
 (function() {
   const config = { attributes: true, childList: true, subtree: true };
-
   const callback = function(mutationsList) {
-    const childBeep = new Audio(chrome.runtime.getURL('assets/audio/child.mp3'));
-    const attrBeep = new Audio(chrome.runtime.getURL('assets/audio/attr.mp3'));
-
-      for(const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          childBeep.play();
-        } else if (mutation.type === 'attributes') {
-          attrBeep.play();
-        }
+    for(const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        chrome.runtime.sendMessage({ action: 'play-child-beep' });
+      } else if (mutation.type === 'attributes') {
+        chrome.runtime.sendMessage({ action: 'play-attr-beep' });
       }
+    }
   };
-
   const observer = new MutationObserver(callback);
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -27,8 +22,10 @@
         sendResponse(false);
       }
     }
+
     if(request.action === 'stop-observing') {
       observer.disconnect();
+      sendResponse(true);
     }
   });
 })();

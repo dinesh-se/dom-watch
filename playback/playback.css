@@ -1,0 +1,8 @@
+body {
+  display: grid;
+  text-align: center;
+}
+
+.warning-message {
+  color: #ED4F32;
+}

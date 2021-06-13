@@ -4,13 +4,24 @@
   const stopButton = document.getElementById('stop-button');
   const message = document.getElementById('message');
   const tabsDetailsMap = {};
-  input.focus();
   
   const getCurrentTab = async () => {
     const queryOptions = { active: true, currentWindow: true };
     const [tab] = await chrome.tabs.query(queryOptions);
   
     return tab;
+  };
+  
+  const createPopupWindow = async () => {
+    const { id } = await chrome.windows.create({
+      focused: false,
+      height: 200,
+      type: 'popup',
+      width: 200,
+      url: chrome.runtime.getURL('playback/playback.html'),
+    });
+
+    return id;
   };
   const { id: currentTabId } = await getCurrentTab();
 
@@ -34,6 +45,7 @@
     const { tabsDetailsMap: tabsDetails } = result;
     const tabPopupState = tabsDetails[currentTabId];
     
+    input.focus();
     renderUI(tabPopupState);
     Object.assign(tabsDetailsMap, tabsDetails);
   });
@@ -46,16 +58,19 @@
     }
   });
   
-  startButton.addEventListener('click', async () => {
+  startButton.addEventListener('click', () => {
     const selectorName = document.getElementById('selector-input').value;
   
     if (selectorName) {
-      chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, (result) => {
-        if(result) {
+      chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
+        if(success) {
+          popupWindowId = await createPopupWindow();
+
           const updatedTabsDetailsMap = {
             ...tabsDetailsMap,
             [currentTabId]: {
               selectorName,
+              popupWindowId,
             },
           };
 
@@ -68,14 +83,19 @@
     }
   });
   
-  stopButton.addEventListener('click', async () => {
-    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' });
-    const isDeleted = delete tabsDetailsMap[currentTabId];
+  stopButton.addEventListener('click', () => {
+    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
+      if (success) {
+        const { popupWindowId } = tabsDetailsMap[currentTabId];
+        const isDeleted = delete tabsDetailsMap[currentTabId];
+        
+        if (isDeleted) {
+          chrome.windows.remove(popupWindowId);
+          chrome.storage.local.set({ tabsDetailsMap });
+        }
     
-    if (isDeleted) {
-      chrome.storage.local.set({ tabsDetailsMap });
-    }
-
-    renderUI();
+        renderUI();
+      }
+    });
   });
 })();
