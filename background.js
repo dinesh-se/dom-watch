@@ -38,4 +38,20 @@
       });
     }
   });
+
+  chrome.windows.onRemoved.addListener((windowId) => {
+    chrome.storage.local.get(['tabsDetailsMap'], (result) => {
+      const { tabsDetailsMap } = result;
+      const tabId = Object.keys(tabsDetailsMap).find((tabId) => tabsDetailsMap[tabId].popupWindowId === windowId);
+      const isDeleted = delete tabsDetailsMap[tabId];
+        
+      if (isDeleted) {
+        chrome.tabs.sendMessage(parseInt(tabId), { action: 'stop-observing' }, (success) => {
+          if (success) {
+            chrome.storage.local.set({ tabsDetailsMap });
+          }
+        });
+      }
+    });
+  });
 })();
