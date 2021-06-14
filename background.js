@@ -49,7 +49,6 @@
     } else {
       chrome.tabs.sendMessage(tabId, { action: 'stop-observing' }, (success) => {
         if (success) {
-          console.log('offff');
           chrome.action.setBadgeText({
             text: 'OFF',
           });
@@ -79,7 +78,6 @@
         if (isDeleted) {
           chrome.tabs.sendMessage(parseInt(tabId), { action: 'stop-observing' }, (success) => {
             if (success) {
-              console.log('offff');
               chrome.action.setBadgeText({
                 text: 'OFF',
               });

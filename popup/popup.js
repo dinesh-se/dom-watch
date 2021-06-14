@@ -89,7 +89,6 @@
   stopButton.addEventListener('click', () => {
     chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
       if (success) {
-        console.log('offff');
         chrome.action.setBadgeText({
           text: 'OFF',
         });
