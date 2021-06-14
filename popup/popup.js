@@ -42,7 +42,7 @@
   };
 
   chrome.storage.local.get(['tabsDetailsMap'], (result) => {
-    const { tabsDetailsMap: tabsDetails } = result;
+    const { tabsDetailsMap: tabsDetails = {}} = result;
     const tabPopupState = tabsDetails[currentTabId];
     
     input.focus();
@@ -64,6 +64,9 @@
     if (selectorName) {
       chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
         if(success) {
+          chrome.action.setBadgeText({
+            text: 'ON',
+          });
           popupWindowId = await createPopupWindow();
 
           const updatedTabsDetailsMap = {
@@ -86,6 +89,10 @@
   stopButton.addEventListener('click', () => {
     chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
       if (success) {
+        console.log('offff');
+        chrome.action.setBadgeText({
+          text: 'OFF',
+        });
         const { popupWindowId } = tabsDetailsMap[currentTabId];
         const isDeleted = delete tabsDetailsMap[currentTabId];
         
