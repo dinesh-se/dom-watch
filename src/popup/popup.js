@@ -1,3 +1,5 @@
+import './popup.css';
+
 (async function () {
   const input = document.getElementById('selector-input');
   const startButton = document.getElementById('start-button');

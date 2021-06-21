@@ -1,0 +1,31 @@
+{
+  "name": "page-watch",
+  "version": "0.0.1",
+  "description": "Browser extension that observes changes in the webpage and plays sound when changes occured.",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dinesh-se/page-watch.git"
+  },
+  "author": "Dinesh Haribabu <dinesh.be.gct@gmail.com> (https://dineshharibabu.in)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dinesh-se/page-watch/issues"
+  },
+  "homepage": "https://github.com/dinesh-se/page-watch#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "copy-webpack-plugin": "^9.0.0",
+    "css-loader": "^5.2.6",
+    "css-minimizer-webpack-plugin": "^3.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "mini-css-extract-plugin": "^1.6.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.39.1",
+    "webpack-cli": "^4.7.2"
+  }
+}

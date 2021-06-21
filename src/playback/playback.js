@@ -1,3 +1,5 @@
+import './playback.css';
+
 (function () {
   const childBeep = new Audio(chrome.runtime.getURL('assets/audio/child.mp3'));
   const attrBeep = new Audio(chrome.runtime.getURL('assets/audio/attr.mp3'));
