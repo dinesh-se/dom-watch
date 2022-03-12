@@ -5,7 +5,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-module.exports = {
+module.exports = (env, argv) => ({
+  mode: argv.mode || 'production',
+  devtool: argv.mode ? 'source-map' : '',
+  watch: !!argv.mode,
   entry: {
     background: './src/background.js',
     'content-script': {
@@ -79,4 +82,4 @@ module.exports = {
       new CssMinimizerPlugin(),
     ],
   },
-};
+});

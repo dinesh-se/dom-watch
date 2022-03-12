@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Browser extension that observes changes in the webpage and plays sound when changes occured.",
   "scripts": {
-    "build": "webpack"
+    "clean": "rm -rf build",
+    "build": "yarn clean && webpack",
+    "build:dev": "yarn clean && webpack --mode=development"
   },
   "repository": {
     "type": "git",
