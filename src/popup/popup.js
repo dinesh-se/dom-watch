@@ -8,23 +8,32 @@ import './popup.css';
   const tabsDetailsMap = {};
   
   const getCurrentTab = async () => {
-    const queryOptions = { active: true, currentWindow: true };
-    const [tab] = await chrome.tabs.query(queryOptions);
-  
-    return tab;
+    try {
+      const queryOptions = { active: true, currentWindow: true };
+      const [tab] = await chrome.tabs.query(queryOptions);
+    
+      return tab;
+    } catch (e) {
+      return null;
+    }
   };
   
   const createPopupWindow = async () => {
-    const { id } = await chrome.windows.create({
-      focused: false,
-      height: 200,
-      type: 'popup',
-      width: 200,
-      url: chrome.runtime.getURL('playback/playback.html'),
-    });
+    try {
+      const { id } = await chrome.windows.create({
+        focused: false,
+        height: 200,
+        type: 'popup',
+        width: 200,
+        url: chrome.runtime.getURL('playback/playback.html'),
+      });
 
-    return id;
+      return id;
+    } catch (e) {
+      return null;
+    }
   };
+
   const { id: currentTabId } = await getCurrentTab();
 
   const renderUI = ({ selectorName = '' } = {}) => {
@@ -43,14 +52,16 @@ import './popup.css';
     }
   };
 
-  chrome.storage.local.get(['tabsDetailsMap'], (result) => {
-    const { tabsDetailsMap: tabsDetails = {}} = result;
-    const tabPopupState = tabsDetails[currentTabId];
-    
-    input.focus();
-    renderUI(tabPopupState);
-    Object.assign(tabsDetailsMap, tabsDetails);
-  });
+  if (currentTabId) {
+    chrome.storage.local.get(['tabsDetailsMap'], (result) => {
+      const { tabsDetailsMap: tabsDetails = {}} = result;
+      const tabPopupState = tabsDetails[currentTabId];
+      
+      input.focus();
+      renderUI(tabPopupState);
+      Object.assign(tabsDetailsMap, tabsDetails);
+    });
+  }
 
   input.addEventListener('input', (event) => {
     if (event.target.value) {
@@ -63,47 +74,58 @@ import './popup.css';
   startButton.addEventListener('click', () => {
     const selectorName = document.getElementById('selector-input').value;
   
-    if (selectorName) {
-      chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
-        if(success) {
-          chrome.action.setBadgeText({
-            text: 'ON',
-          });
-          popupWindowId = await createPopupWindow();
+    if (selectorName && currentTabId) {
+      try {
+        chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
+          console.log('PP - SIGNAL SENT');
+          if(success) {
+            chrome.action.setBadgeText({
+              text: 'ON',
+            });
+            const popupWindowId = await createPopupWindow();
 
-          const updatedTabsDetailsMap = {
-            ...tabsDetailsMap,
-            [currentTabId]: {
-              selectorName,
-              popupWindowId,
-            },
-          };
-
-          renderUI({ selectorName });
-          chrome.storage.local.set({ tabsDetailsMap: updatedTabsDetailsMap});
-        } else {
-          message.innerText = 'No element found';
-        }
-      });
+            if (popupWindowId) {
+              const updatedTabsDetailsMap = {
+                ...tabsDetailsMap,
+                [currentTabId]: {
+                  selectorName,
+                  popupWindowId,
+                },
+              };
+  
+              renderUI({ selectorName });
+              chrome.storage.local.set({ tabsDetailsMap: updatedTabsDetailsMap});
+            }
+          } else {
+            message.innerText = 'No element found';
+          }
+        });
+      } catch (e) {
+        console.error('ERROR:', e);
+      }
     }
   });
   
   stopButton.addEventListener('click', () => {
-    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
-      if (success) {
-        chrome.action.setBadgeText({
-          text: 'OFF',
-        });
-        const { popupWindowId } = tabsDetailsMap[currentTabId];
-        const isDeleted = delete tabsDetailsMap[currentTabId];
-        
-        if (isDeleted) {
-          chrome.windows.remove(popupWindowId);
-          chrome.storage.local.set({ tabsDetailsMap });
+    try {
+      chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
+        if (success) {
+          chrome.action.setBadgeText({
+            text: 'OFF',
+          });
+          const { popupWindowId } = tabsDetailsMap[currentTabId];
+          const isDeleted = delete tabsDetailsMap[currentTabId];
+          
+          if (isDeleted) {
+            chrome.windows.remove(popupWindowId);
+            chrome.storage.local.set({ tabsDetailsMap });
+          }
+      
+          renderUI();
         }
-    
-        renderUI();
-      }
-    });
+      });
+    } catch (e) {
+      console.error('POPUP - ERROR ON ENDING:', e);
+    }
   });
 })();

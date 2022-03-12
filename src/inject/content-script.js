@@ -1,6 +1,6 @@
 (function() {
   const config = { attributes: true, childList: true, subtree: true };
-  const callback = function(mutationsList) {
+  const callback = (mutationsList) => {
     for(const mutation of mutationsList) {
       if (mutation.type === 'childList') {
         chrome.runtime.sendMessage({ action: 'play-child-beep' });
@@ -11,21 +11,26 @@
   };
   const observer = new MutationObserver(callback);
 
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if(request.action === 'start-observing') {
-      const targetNode = document.querySelector(request.selectorName);
-      
-      if (targetNode) {
-        observer.observe(targetNode, config);
-        sendResponse(true);
-      } else {
-        sendResponse(false);
+  try {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if(request.action === 'start-observing') {
+        console.log('SIGNAL RECEIVED');
+        const targetNode = document.querySelector(request.selectorName);
+        
+        if (targetNode) {
+          observer.observe(targetNode, config);
+          sendResponse(true);
+        } else {
+          sendResponse(false);
+        }
       }
-    }
 
-    if(request.action === 'stop-observing') {
-      observer.disconnect();
-      sendResponse(true);
-    }
-  });
+      if(request.action === 'stop-observing') {
+        observer.disconnect();
+        sendResponse(true);
+      }
+    });
+  } catch (e) {
+    console.error('LISTENING FAILED', e);
+  }
 })();
