@@ -1,3 +1,4 @@
+import { logErrorMessage } from '../logger';
 import './playback.css';
 
 (function () {
@@ -5,7 +6,7 @@ import './playback.css';
   const attrBeep = new Audio(chrome.runtime.getURL('assets/audio/attr.mp3'));
 
   try {
-    chrome.runtime.onMessage.addListener((request) => {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.action === 'play-child-beep') {
         childBeep.play();
       }
@@ -13,8 +14,9 @@ import './playback.css';
       if (request.action === 'play-attr-beep') {
         attrBeep.play();
       }
+      sendResponse(true);
     });
   } catch (e) {
-    console.error('PLAYBACK LISTENING FAILED', e);
+    logErrorMessage(6, e);
   }
 })();

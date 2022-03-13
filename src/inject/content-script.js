@@ -1,11 +1,14 @@
+import { logErrorMessage } from '../logger';
+
 (function() {
-  const config = { attributes: true, childList: true, subtree: true };
+  const noOp = () => {};
+  const config = { attributes: false, childList: true, subtree: false };
   const callback = (mutationsList) => {
     for(const mutation of mutationsList) {
       if (mutation.type === 'childList') {
-        chrome.runtime.sendMessage({ action: 'play-child-beep' });
+        chrome.runtime.sendMessage({ action: 'play-child-beep' }, noOp);
       } else if (mutation.type === 'attributes') {
-        chrome.runtime.sendMessage({ action: 'play-attr-beep' });
+        chrome.runtime.sendMessage({ action: 'play-attr-beep' }, noOp);
       }
     }
   };
@@ -14,7 +17,6 @@
   try {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if(request.action === 'start-observing') {
-        console.log('SIGNAL RECEIVED');
         const targetNode = document.querySelector(request.selectorName);
         
         if (targetNode) {
@@ -31,6 +33,6 @@
       }
     });
   } catch (e) {
-    console.error('LISTENING FAILED', e);
+    logErrorMessage(7, e);
   }
 })();

@@ -1,3 +1,5 @@
+import { logErrorMessage } from './logger';
+
 (function () {
   try {
     chrome.tabs.onActivated.addListener(async () => {
@@ -19,7 +21,7 @@
       });
     });
   } catch (e) {
-    console.error('ERROR ON TAB ACTIVATION', e);
+    logErrorMessage(1, e);
   } 
 
   try {
@@ -37,7 +39,6 @@
               attempts++;
               try {
                 chrome.tabs.sendMessage(tabId, { action: 'start-observing', selectorName }, (result) => {
-                  console.log('BG - SIGNAL START', result);
                   if (result) {
                     chrome.action.setBadgeText({
                       text: 'ON',
@@ -49,7 +50,7 @@
                   }
                 });
               } catch (e) {
-                console.error('BG - ERROR ON SENDING:', e);
+                logErrorMessage(2.1, e);
               }
             }, 100);
           }
@@ -57,7 +58,7 @@
       }
     });
   } catch (e) {
-    console.error('ERROR ON TAB UPDATE', e);
+    logErrorMessage(2, e);
   }
 
   try {
@@ -83,6 +84,6 @@
       });
     });
   } catch (e) {
-    console.error('ERROR ON TAB REMOVAL');
+    logErrorMessage(3, e);
   }
 })();

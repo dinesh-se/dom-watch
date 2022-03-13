@@ -7,7 +7,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = (env, argv) => ({
   mode: argv.mode || 'production',
-  devtool: argv.mode ? 'source-map' : '',
+  ...(argv.mode ? { devtool : 'source-map' }: {}),
   watch: !!argv.mode,
   entry: {
     background: './src/background.js',

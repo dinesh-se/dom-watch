@@ -1,3 +1,4 @@
+import { logErrorMessage } from '../logger';
 import './popup.css';
 
 (async function () {
@@ -77,7 +78,6 @@ import './popup.css';
     if (selectorName && currentTabId) {
       try {
         chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
-          console.log('PP - SIGNAL SENT');
           if(success) {
             chrome.action.setBadgeText({
               text: 'ON',
@@ -101,7 +101,7 @@ import './popup.css';
           }
         });
       } catch (e) {
-        console.error('ERROR:', e);
+        logErrorMessage(4, e);
       }
     }
   });
@@ -125,7 +125,7 @@ import './popup.css';
         }
       });
     } catch (e) {
-      console.error('POPUP - ERROR ON ENDING:', e);
+      logErrorMessage(5, e);
     }
   });
 })();
