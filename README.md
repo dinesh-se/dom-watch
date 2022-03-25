@@ -1,4 +1,4 @@
-# ![Page Watch logo](./src/assets/images/popup.png)
+# ![Page Watch logo](./src/assets/images/page-watch-logo.png)
 
 Chrome browser extension to observe changes in a webpage. It uses `MutationObserver` to detect the changes. Pass a valid element selector in the input field and it will start observing the changes in the page (where possible). The extension is page scoped, which means that multiple pages can be observed at the same time.
 
@@ -14,7 +14,7 @@ Other application areas includes visa appointment booking system, alerting on wh
 ## Working Details
 This is how the extension works at a high level. The `Popup` component receives a input to find an element in the page. If the element is found, it will send a message to [content-script.js](./src/inject/content-script.js) which was injected into webpage. When the message is received, the injected script starts observing the element and send a message to `playback` component to play sounds. The rationale for creating the `playback` component to play sounds is a different story which I'll explain in a blog post later. Other programming logic involves maintaining the popup UI up-to-date, preserving state across tabs and updating the extension badge.
 
-The `callback` method in [content-script.js](./src/inject/content-script.js#5) may be updated to handle a different approach when a change is detected.
+The `callback` method in [content-script.js](./src/inject/content-script.js) may be updated to handle a different approach when a change is detected.
 
 ```
 const callback = (mutationsList) => {
