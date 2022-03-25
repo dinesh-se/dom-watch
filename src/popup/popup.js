@@ -101,7 +101,7 @@ import './popup.css';
           }
         });
       } catch (e) {
-        logErrorMessage(4, e);
+        logErrorMessage(e, 4);
       }
     }
   });
@@ -125,7 +125,7 @@ import './popup.css';
         }
       });
     } catch (e) {
-      logErrorMessage(5, e);
+      logErrorMessage(e, 5);
     }
   });
 })();

@@ -21,7 +21,7 @@ import { logErrorMessage } from './logger';
       });
     });
   } catch (e) {
-    logErrorMessage(1, e);
+    logErrorMessage(e, 1);
   } 
 
   try {
@@ -50,7 +50,7 @@ import { logErrorMessage } from './logger';
                   }
                 });
               } catch (e) {
-                logErrorMessage(2.1, e);
+                logErrorMessage(e, 2.1);
               }
             }, 100);
           }
@@ -58,7 +58,7 @@ import { logErrorMessage } from './logger';
       }
     });
   } catch (e) {
-    logErrorMessage(2, e);
+    logErrorMessage(e, 2);
   }
 
   try {
@@ -84,6 +84,6 @@ import { logErrorMessage } from './logger';
       });
     });
   } catch (e) {
-    logErrorMessage(3, e);
+    logErrorMessage(e, 3);
   }
 })();

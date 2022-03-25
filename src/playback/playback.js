@@ -17,6 +17,6 @@ import './playback.css';
       sendResponse(true);
     });
   } catch (e) {
-    logErrorMessage(6, e);
+    logErrorMessage(e, 6);
   }
 })();
