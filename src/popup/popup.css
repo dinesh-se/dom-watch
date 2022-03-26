@@ -15,12 +15,12 @@ body {
   width: 320px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 3rem 4.5rem 1.5rem;
+  grid-template-rows: 3rem auto 1.5rem;
   gap: 0.5rem 0.5rem;
   grid-template-areas:
     "header header header header"
-    "input input input input"
-    "start start stop stop";
+    "status status status status"
+    "pick-btn pick-btn stop-btn stop-btn";
 }
 
 .header { 
@@ -29,47 +29,38 @@ body {
   background-size: cover;
 }
 
-.input { 
-  grid-area: input;
-}
-
-.selector-name {
-  height: 2rem;
-}
-
-.code-line {
-  background: rgb(240 240 240);
-  padding: 2px;
-  letter-spacing: 1px;
-}
-
-.input-message {
-  margin: 0;
-  margin-top: 2px;
+.status {
+  grid-area: status;
+  background-color: #ededed;
   font-size: 11px;
-  line-height: 1rem;
+  padding: 0.5rem;
 }
 
-.start { 
-  grid-area: start;
+.status.listening {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.pick-btn { 
+  grid-area: pick-btn;
   background-color: #1C7BCC;
   border: none;
   border-radius: 2px;
   color: #ffffff;
 }
 
-.start:disabled {
+.pick-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.stop { 
-  grid-area: stop;
+.stop-btn { 
+  grid-area: stop-btn;
   border: none;
   border-radius: 2px;
 }
 
-.stop:disabled {
+.stop-btn:disabled {
   cursor: not-allowed;
 }
 

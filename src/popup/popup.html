@@ -6,13 +6,9 @@
   <body>
     <div class="grid-container">
       <header class="header"></header>
-      <div class="input">
-        <input class="selector-name" type="text" name="selector" id="selector-input" placeholder="selector-name"/>
-        <p class="input-message">The value will be passed to <i class="code-line">document.querySelector()</i> to find the element in the DOM.</p>
-      </div>
-      <button class="start" id="start-button" disabled>Start</button>
-      <button class="stop" id="stop-button" disabled>Stop</button>
+      <p class="status" id="status"></p>
+      <button class="pick-btn" id="pick-button">Pick an element</button>
+      <button class="stop-btn" id="stop-button" disabled>Stop Observing</button>
     </div>
-    <strong class="message" id="message"></strong>
   </body>
 </html>

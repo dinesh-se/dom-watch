@@ -1,11 +1,9 @@
-import { logErrorMessage } from '../logger';
 import './popup.css';
 
 (async function () {
-  const input = document.getElementById('selector-input');
-  const startButton = document.getElementById('start-button');
+  const pickButton = document.getElementById('pick-button');
   const stopButton = document.getElementById('stop-button');
-  const message = document.getElementById('message');
+  const status = document.getElementById('status');
   const tabsDetailsMap = {};
   
   const getCurrentTab = async () => {
@@ -18,38 +16,20 @@ import './popup.css';
       return null;
     }
   };
-  
-  const createPopupWindow = async () => {
-    try {
-      const { id } = await chrome.windows.create({
-        focused: false,
-        height: 200,
-        type: 'popup',
-        width: 200,
-        url: chrome.runtime.getURL('playback/playback.html'),
-      });
-
-      return id;
-    } catch (e) {
-      return null;
-    }
-  };
 
   const { id: currentTabId } = await getCurrentTab();
 
-  const renderUI = ({ selectorName = '' } = {}) => {
-    if (selectorName) {
-      input.value = selectorName;
-      input.disabled = true;
-      startButton.disabled = true;
+  const renderUI = ({ isObserving = false } = {}) => {
+    if (isObserving) {
+      pickButton.disabled = true;
       stopButton.disabled = false;
-      message.innerText = 'Observing DOM changes';
+      status.innerText = 'Observing changes...';
+      status.classList.add('listening');
     } else {
-      input.value = '';
-      input.disabled = false;
-      startButton.disabled = true;
+      pickButton.disabled = false;
       stopButton.disabled = true;
-      message.innerText = '';
+      status.innerText = `Click "Pick an element" button to select an element from the page and start listening for changes. Press ESC to discard selection.`;
+      status.classList.remove('listening');
     }
   };
 
@@ -58,74 +38,35 @@ import './popup.css';
       const { tabsDetailsMap: tabsDetails = {}} = result;
       const tabPopupState = tabsDetails[currentTabId];
       
-      input.focus();
       renderUI(tabPopupState);
       Object.assign(tabsDetailsMap, tabsDetails);
     });
   }
 
-  input.addEventListener('input', (event) => {
-    if (event.target.value) {
-      startButton.disabled = false
-    } else {
-      startButton.disabled = true;
-    }
-  });
-  
-  startButton.addEventListener('click', () => {
-    const selectorName = document.getElementById('selector-input').value;
-  
-    if (selectorName && currentTabId) {
-      try {
-        chrome.tabs.sendMessage(currentTabId, { action: 'start-observing', selectorName }, async (success) => {
-          if(success) {
-            chrome.action.setBadgeText({
-              text: 'ON',
-            });
-            const popupWindowId = await createPopupWindow();
-
-            if (popupWindowId) {
-              const updatedTabsDetailsMap = {
-                ...tabsDetailsMap,
-                [currentTabId]: {
-                  selectorName,
-                  popupWindowId,
-                },
-              };
-  
-              renderUI({ selectorName });
-              chrome.storage.local.set({ tabsDetailsMap: updatedTabsDetailsMap});
-            }
-          } else {
-            message.innerText = 'No element found';
-          }
-        });
-      } catch (e) {
-        logErrorMessage(e, 4);
+  pickButton.addEventListener('click', () => {
+    chrome.tabs.sendMessage(currentTabId, { action: 'pick-an-element' }, (success) => {
+      if (success) {
+        window.close();
       }
-    }
+    });
   });
   
   stopButton.addEventListener('click', () => {
-    try {
-      chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
-        if (success) {
-          chrome.action.setBadgeText({
-            text: 'OFF',
-          });
-          const { popupWindowId } = tabsDetailsMap[currentTabId];
-          const isDeleted = delete tabsDetailsMap[currentTabId];
-          
-          if (isDeleted) {
-            chrome.windows.remove(popupWindowId);
-            chrome.storage.local.set({ tabsDetailsMap });
-          }
-      
-          renderUI();
+    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
+      if (success) {
+        chrome.action.setBadgeText({
+          tabId: currentTabId,
+          text: 'OFF',
+        });
+        const { popupWindowId } = tabsDetailsMap[currentTabId];
+        const isDeleted = delete tabsDetailsMap[currentTabId];
+        
+        if (isDeleted) {
+          chrome.windows.remove(popupWindowId);
+          chrome.storage.local.set({ tabsDetailsMap });
         }
-      });
-    } catch (e) {
-      logErrorMessage(e, 5);
-    }
+        renderUI();
+      }
+    });
   });
 })();
