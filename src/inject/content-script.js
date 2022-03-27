@@ -39,6 +39,9 @@
         window.addEventListener('mouseout', resetElement);
 
         const selectTarget = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+
           resetElement(e);
           window.removeEventListener('mouseover', highlightElement);
           window.removeEventListener('mouseout', resetElement);
@@ -48,7 +51,7 @@
           window.removeEventListener('click', selectTarget);
         }
 
-        window.addEventListener('click', selectTarget);
+        window.addEventListener('click', selectTarget, true);
 
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {

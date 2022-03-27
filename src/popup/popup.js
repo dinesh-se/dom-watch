@@ -54,17 +54,8 @@ import './popup.css';
   stopButton.addEventListener('click', () => {
     chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
       if (success) {
-        chrome.action.setBadgeText({
-          tabId: currentTabId,
-          text: 'OFF',
-        });
         const { popupWindowId } = tabsDetailsMap[currentTabId];
-        const isDeleted = delete tabsDetailsMap[currentTabId];
-        
-        if (isDeleted) {
-          chrome.windows.remove(popupWindowId);
-          chrome.storage.local.set({ tabsDetailsMap });
-        }
+        chrome.windows.remove(popupWindowId);
         renderUI();
       }
     });
