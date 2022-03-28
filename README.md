@@ -2,7 +2,9 @@
 Chrome browser extension to observe changes in a webpage. It uses `MutationObserver` to detect the changes. Pick an element in the page and it will start observing the changes in the page (where possible). The extension is scoped to each page, which means that multiple pages can be observed at the same time.
 
 ## Demo
-VIDEO PLACEHOLDER
+In this demo, I have modified the code a bit to display a toast message when any email contains the string `TEST SUCCESS!!!`.
+<sub>video hosted in vidyard</sub>
+[![Extension working video](./src/assets/images/thumbnail.gif)](https://share.vidyard.com/watch/UyrwZmorxBPkmxWfQee2By?)
 
 ## Applications
 In its current version, the extension emits a beep sound whenever a child element is added/removed, or when any attribute of the targetted element changes. With minor code changes, this may be extended to cover a variety of use cases.
