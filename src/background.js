@@ -58,7 +58,15 @@ const clearOnNavigation = async ({tabId, url, transitionType}) => {
         const { popupWindowId, isObserving } = tabsDetailsMap[tabId];
 
         if (isObserving) {
-          await chrome.windows.remove(popupWindowId);
+          try {
+            await chrome.windows.remove(popupWindowId);
+          } catch(e) {
+            const isDeleted = delete tabsDetailsMap[tabId];
+    
+            if (isDeleted) {
+              chrome.storage.local.set({ tabsDetailsMap });
+            }
+          }
         }
       }
     });
@@ -99,7 +107,8 @@ const clearOnWindowClose = (windowId) => {
 chrome.runtime.onMessage.addListener(async ({ status }) => {
   if(status === 'observing') {
     const { id: currentTabId } = await getCurrentTab();
-    const popupWindowId = await createPopupWindow();
+    // const popupWindowId = await createPopupWindow();
+    const popupWindowId = 100;
     chrome.storage.local.get(['tabsDetailsMap'], async (result) => {
       const { tabsDetailsMap = {}} = result;
 

@@ -52,10 +52,22 @@ import './popup.css';
   });
   
   stopButton.addEventListener('click', () => {
-    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, (success) => {
+    chrome.tabs.sendMessage(currentTabId, { action: 'stop-observing' }, async (success) => {
       if (success) {
         const { popupWindowId } = tabsDetailsMap[currentTabId];
-        chrome.windows.remove(popupWindowId);
+        try {
+          await chrome.windows.remove(popupWindowId);
+        } catch (e) {
+          const isDeleted = delete tabsDetailsMap[currentTabId];
+    
+          if (isDeleted) {
+            await chrome.action.setBadgeText({
+              tabId: currentTabId,
+              text: 'OFF',
+            });
+            await chrome.storage.local.set({ tabsDetailsMap });
+          }
+        }
         renderUI();
       }
     });

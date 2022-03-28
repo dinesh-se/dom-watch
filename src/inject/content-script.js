@@ -1,14 +1,31 @@
 (function() {
     const noOp = () => {};
     const config = { attributes: false, childList: true, subtree: true };
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      width: 300px;
+      height: 40px;
+      bottom: 200px;
+      left: calc(50% - 150px);
+      background: #e91e63;
+      color: white;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    toast.innerText = 'Mail Arrived!';
     
-    // This callback executes when a change is observed in the page
+    // This callback method executes when a change is observed in the page
     const callback = (mutationsList) => {
       for(const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          chrome.runtime.sendMessage({ action: 'play-child-beep' }, noOp);
-        } else if (mutation.type === 'attributes') {
-          chrome.runtime.sendMessage({ action: 'play-attr-beep' }, noOp);
+        if (!!mutation.type) {
+          const nodes = Array.from(mutation.addedNodes);
+          const check = nodes.some((node) => node.textContent.includes('TEST SUCCESS!!!'));
+          if (check) {
+            document.body.appendChild(toast);
+          }
         }
       }
     };
@@ -35,29 +52,25 @@
           e.target.style.boxShadow = originalBoxShadow;
         };
 
-        window.addEventListener('mouseover', highlightElement);
-        window.addEventListener('mouseout', resetElement);
+        document.addEventListener('mouseover', highlightElement);
+        document.addEventListener('mouseout', resetElement);
 
         const selectTarget = (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-
           resetElement(e);
-          window.removeEventListener('mouseover', highlightElement);
-          window.removeEventListener('mouseout', resetElement);
+          document.removeEventListener('mouseover', highlightElement);
+          document.removeEventListener('mouseout', resetElement);
 
-          chrome.runtime.sendMessage(null, { status: 'observing'});
+          chrome.runtime.sendMessage(null, { status: 'observing' });
           observer.observe(e.target, config);
-          window.removeEventListener('click', selectTarget);
         }
 
-        window.addEventListener('click', selectTarget, true);
+        document.addEventListener('click', selectTarget, { once: true });
 
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
-            window.removeEventListener('mouseover', highlightElement);
-            window.removeEventListener('mouseout', resetElement);
-            window.removeEventListener('click', selectTarget);
+            document.removeEventListener('mouseover', highlightElement);
+            document.removeEventListener('mouseout', resetElement);
+            document.removeEventListener('click', selectTarget);
           }
         });
       }
