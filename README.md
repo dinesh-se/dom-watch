@@ -3,7 +3,9 @@ Chrome browser extension to observe changes in a webpage. It uses `MutationObser
 
 ## Demo
 In this demo, I have modified the code a bit to display a toast message when any email contains the string `TEST SUCCESS!!!`. Branch: `origin/toast-alert`
+
 <sub>video hosted in vidyard</sub>
+
 [![Extension working video](./src/assets/images/thumbnail.gif)](https://share.vidyard.com/watch/UyrwZmorxBPkmxWfQee2By?)
 
 ## Applications
