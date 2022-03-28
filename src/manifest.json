@@ -1,7 +1,7 @@
 {
   "name": "Page Watch",
-  "description": "Browser extension that observes changes in the webpage and plays sound when changes occured.",
-  "version": "0.0.1",
+  "description": "Browser extension that observes changes in a webpage and plays sound when changes occured.",
+  "version": "2.0.0",
   "manifest_version": 3,
   "author": "Dinesh Haribabu <dinesh.be.gct@gmail.com> (https://dineshharibabu.in)",
   "background": {
@@ -25,7 +25,8 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "content_scripts": [
     {
