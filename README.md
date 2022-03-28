@@ -1,5 +1,17 @@
 # ![Page Watch logo](./src/assets/images/page-watch-logo.png)
+
+- [Installation](#installation)
+- [Demo](#demo)
+- [Applications](#applications)
+- [Working Details](#working-details)
+- [Future Plans](#plans-for-this-extension)
+
 Chrome browser extension to observe changes in a webpage. It uses `MutationObserver` to detect the changes. Pick an element in the page and it will start observing the changes in the page (where possible). The extension is scoped to each page, which means that multiple pages can be observed at the same time.
+
+## Installation
+- Run `yarn build` or `yarn build:dev` for development
+- Enable `Developer mode` in `chrome://extensions` page
+- Click `Load unpacked` and select the generated `build` folder from the repo
 
 ## Demo
 In this demo, I have modified the code a bit to display a toast message when any email contains the string `TEST SUCCESS!!!`. Branch: `origin/toast-alert`
