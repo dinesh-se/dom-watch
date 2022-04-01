@@ -53,13 +53,16 @@
 
         window.addEventListener('click', selectTarget, true);
 
-        document.addEventListener('keydown', (e) => {
+        const resetAll = (e) => {
           if (e.key === 'Escape') {
             window.removeEventListener('mouseover', highlightElement);
             window.removeEventListener('mouseout', resetElement);
             window.removeEventListener('click', selectTarget);
+            window.removeEventListener('keydown', resetAll);
           }
-        });
+        };
+
+        window.addEventListener('keydown', resetAll);
       }
 
       if(request.action === 'stop-observing') {
